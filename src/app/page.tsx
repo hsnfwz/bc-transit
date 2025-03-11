@@ -6,9 +6,16 @@ import {
   getVehiclePositions,
 } from '@/helpers/translink-api';
 import MapCaller from "@/components/MapCaller";
-
+import { readRoutesTxtFile, readStopsTxtFile, readTripsTxtFile, readStopTimesTxtFile } from "@/helpers/files";
 
 async function Home() {
+  console.time('performance');
+  // await readRoutesTxtFile();
+  // await readStopsTxtFile();
+  // await readTripsTxtFile();
+  // await readStopTimesTxtFile();
+  console.timeEnd('performance');
+
   const vehicles = await getVehiclePositions();
 
   console.log(vehicles);

@@ -1,4 +1,8 @@
-// GTFS REFERENCE: https://gtfs.org/documentation/realtime/feed-entities/overview/
+/* 
+  References:
+  - Realtime: https://gtfs.org/documentation/realtime/reference/
+  
+*/
 
 import GtfsRealtimeBindings from "gtfs-realtime-bindings";
 
