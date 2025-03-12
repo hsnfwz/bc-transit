@@ -8,14 +8,17 @@
 
 */
 
-import { promises as fs } from 'fs';
+// import { promises as fs } from 'fs';
 
 import { Routes, Route, RouteTrips, Trip, StopTimes, StopTime, Stop, Stops, Shape, Shapes, TripShapes } from '@/types/transit';
 
 async function readRoutesTxtFile() {
-  const file = await fs.readFile(process.cwd() + '/public/translink-static-data/routes.txt', 'utf8');
+  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/routes.txt', 'utf8');
 
-  const lines = file.split('\n');
+  const response = await fetch('/schedule/routes.txt');
+  const text = await response.text();
+
+  const lines = text.split('\n');
 
   // const headers = lines[0].replace('\r', '').split(',');
   // console.log(headers);
@@ -54,9 +57,12 @@ async function readRoutesTxtFile() {
 }
 
 async function readTripsTxtFile() {
-  const file = await fs.readFile(process.cwd() + '/public/translink-static-data/trips.txt', 'utf8');
+  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/trips.txt', 'utf8');
 
-  const lines = file.split('\n');
+  const response = await fetch('/schedule/trips.txt');
+  const text = await response.text();
+  
+  const lines = text.split('\n');
 
   // const headers = lines[0].replace('\r', '').split(',');
   // console.log(headers);
@@ -102,9 +108,12 @@ async function readTripsTxtFile() {
 }
 
 async function readStopTimesTxtFile() {
-  const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stop_times.txt', 'utf8');
+  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stop_times.txt', 'utf8');
 
-  const lines = file.split('\n');
+  const response = await fetch('/schedule/stop_times.txt');
+  const text = await response.text();
+  
+  const lines = text.split('\n');
 
   // const headers = lines[0].replace('\r', '').split(',');
   // console.log(headers);
@@ -149,9 +158,12 @@ async function readStopTimesTxtFile() {
 }
 
 async function readStopsTxtFile() {
-  const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stops.txt', 'utf8');
+  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stops.txt', 'utf8');
 
-  const lines = file.split('\n');
+  const response = await fetch('/schedule/stops.txt');
+  const text = await response.text();
+  
+  const lines = text.split('\n');
 
   // const headers = lines[0].replace('\r', '').split(',');
   // console.log(headers);
@@ -192,9 +204,12 @@ async function readStopsTxtFile() {
 }
 
 async function readShapesTxtFile() {
-  const file = await fs.readFile(process.cwd() + '/public/translink-static-data/shapes.txt', 'utf8');
+  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/shapes.txt', 'utf8');
 
-  const lines = file.split('\n');
+  const response = await fetch('/schedule/shapes.txt');
+  const text = await response.text();
+  
+  const lines = text.split('\n');
 
   // const headers = lines[0].replace('\r', '').split(',');
   // console.log(headers);
