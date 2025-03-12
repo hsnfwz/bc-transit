@@ -1,44 +1,46 @@
-import Image from "next/image";
-
 import {
   getServiceAlerts,
   getTripUpdates,
   getVehiclePositions,
-} from '@/helpers/translink-api';
+} from '@/helpers/transit';
+import { readRoutesTxtFile, readStopsTxtFile, readTripsTxtFile, readStopTimesTxtFile, readShapesTxtFile } from "@/helpers/files";
+
 import MapCaller from "@/components/MapCaller";
-import { readRoutesTxtFile, readStopsTxtFile, readTripsTxtFile, readStopTimesTxtFile } from "@/helpers/files";
+import MapSidebar from "@/components/MapSidebar";
 
 async function Home() {
   console.time('performance');
-  // await readRoutesTxtFile();
-  // await readStopsTxtFile();
-  // await readTripsTxtFile();
-  // await readStopTimesTxtFile();
+  const [
+    { routes }, { routeTrips }, { tripShapes }, vehicles
+  ] = await Promise.all([
+    readRoutesTxtFile(),
+    readTripsTxtFile(),
+    readShapesTxtFile(),
+    getVehiclePositions(),
+  ]);
   console.timeEnd('performance');
 
-  const vehicles = await getVehiclePositions();
-
-  console.log(vehicles);
-
-  if (!vehicles) {
-    return (
-      <h1>No Vehicles</h1>
-    );
-  }
-
   return (
-    <MapCaller vehicles={JSON.parse(JSON.stringify(vehicles))} />
-    // <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-    //   <Image
-    //     className="dark:invert"
-    //     src="/next.svg"
-    //     alt="Next.js logo"
-    //     width={180}
-    //     height={38}
-    //     priority
-    //   />
-    // </main>
+    <div className="relative top-0 left-0 flex flex-col md:flex-row gap-4 p-4 w-full h-full">
+      <div className="order-2 md:order-1">
+        <MapSidebar
+          routes={JSON.parse(JSON.stringify(routes))}
+          routeTrips={JSON.parse(JSON.stringify(routeTrips))}
+          tripShapes={JSON.parse(JSON.stringify(tripShapes))}
+        />
+      </div>
+      <div className="w-full h-[calc(100vh-248px)] md:h-[calc(100vh-32px)] order-1 md:order-2">
+        <MapCaller vehicles={JSON.parse(JSON.stringify(vehicles))} />
+      </div>
+    </div>
   );
 }
 
 export default Home;
+
+// TODO: marker clusters
+// TODO: local storage for user activity and preferences
+// TODO: display a dashed path from home to nearest stop for a selected route
+// TODO: only show live bus data for the selected route
+
+// FIX: some routes do not exist when you click on them - check before trying to display - see Next.js provided errors

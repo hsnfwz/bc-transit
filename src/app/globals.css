@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-.leaflet-container {
-  height: 100vh !important;
-}
-
 .leaflet-popup {
   margin-top: 8px !important;
 }
@@ -25,9 +21,6 @@
   width: 100% !important;
 }
 
-.leaflet-popup-tip-container {
-}
-
 .leaflet-popup-tip {
   background-color: white !important;
   border: none !important;
@@ -36,4 +29,16 @@
 
 .leaflet-popup-close-button {
   display: none !important;
+}
+
+@media (min-width: 768px) {
+  .leaflet-container {
+    height: calc(100vh - 32px) !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .leaflet-container {
+    height: calc(100vh - 248px) !important;
+  }
 }

@@ -2,68 +2,40 @@
 
 import 'leaflet/dist/leaflet.css';
 
-import { useState, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { useState, useRef, useContext } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import GtfsRealtimeBindings from "gtfs-realtime-bindings";
+import { RouteContext } from '@/contexts/RouteContextProvider';
 
-// TODO: marker clusters
-// TODO: show statis schedule as well (which is the estimated next bus times)
+function Map({ vehicles }: {
+  vehicles: (GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[],
+}) {
+  const { hoveredRoute, setHoveredRoute, selectedRoute, setSelectedRoute } = useContext(RouteContext);
 
-
-/*
-  1. write a script that converts text files to json
-  2. write a function that reads json (see cellystats)
-  3. use json data to manage what a user sees on the map (ex: stops/routes within 2km of a user's location)
-  4. use localstorage to keep track of a user's activity and preferences
-  5. the files used in this app need to be update every week (translink posts new files every week)
-*/
-
-function Map({ vehicles }: { vehicles: (GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[] }) {
   const [mapTheme, setMapTheme] = useState<string>('light');
-  // const [vehicles, setVehicles] = useState<(GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[]>([]);
-
   const mapRef = useRef<any>(null);
 
-  // useEffect(() => {
-  //   async function getData() {
-
-  //     const _vehicles = await getVehiclePositions();
-
-  //     if (_vehicles) {
-  //       console.log(_vehicles);
-  //       setVehicles(_vehicles);
-  //     }
-
-
-  //     // setInterval(async () => {
-  //     //   console.log('refresh');
-
-  //     //   const _vehicles = await getVehiclePositions();
-
-  //     //   if (_vehicles) {
-  //     //     console.log(_vehicles);
-  //     //     setVehicles(_vehicles);
-  //     //   }
-  //     // }, 60000); // 1 min
-  //   }
-
-  //   getData();
-  // }, []);
+  const iconPixelSize: [number, number] = [40, 40];
 
   const locationIcon = new Icon({
     iconUrl: '/map-pin-fill.svg',
-    iconSize: [40 , 40] // pixel size
+    iconSize: iconPixelSize,
   });
 
   const busIcon = new Icon({
     iconUrl: '/bus-fill.svg',
-    iconSize: [40 , 40] // pixel size
+    iconSize: iconPixelSize,
+  });
+
+  const circleIcon = new Icon({
+    iconUrl: '/circle-line.svg',
+    iconSize: iconPixelSize,
   });
 
   return (
-    <div className="relative top-0 left-0">
-      <div className="absolute bottom-0 right-0 bg-black/75 z-50 p-2">
+    <div className="relative top-0 left-0 w-full h-full">
+      {/* <div className="absolute bottom-0 right-0 bg-black/75 z-50 p-2">
         <button type="button" className="p-2 bg-neutral-500 text-white cursor-pointer capitalize" onClick={() => {
           if (mapTheme === 'light') {
             setMapTheme('dark');
@@ -71,8 +43,8 @@ function Map({ vehicles }: { vehicles: (GtfsRealtimeBindings.transit_realtime.IV
             setMapTheme('light');
           }
         }}>{mapTheme === 'light' ? 'dark' : 'light'}</button>
-      </div>
-      <MapContainer ref={mapRef} center={[49.22563, -122.97430]} zoom={14} scrollWheelZoom attributionControl={false} className="z-40">
+      </div> */}
+      <MapContainer ref={mapRef} center={[49.22563, -122.97430]} zoom={12} scrollWheelZoom attributionControl={false} className="z-40">
         <TileLayer
           url={`https://tile.jawg.io/jawg-${mapTheme}/{z}/{x}/{y}{r}.png?access-token=${process.env.NEXT_PUBLIC_JAWG_ACCESS_TOKEN}`}
         />
@@ -86,7 +58,29 @@ function Map({ vehicles }: { vehicles: (GtfsRealtimeBindings.transit_realtime.IV
             </div>
           </Popup>
         </Marker>
-        {vehicles.map((vehicle, index) => (
+
+        {hoveredRoute && (
+          <>
+            <Polygon positions={hoveredRoute.polylinePositions} color="lightgray" />
+            <Polyline positions={hoveredRoute.polylinePositions} color="gray" />
+          </>
+        )}
+
+        {selectedRoute && (
+          <>
+            <Polygon positions={selectedRoute.polylinePositions} color="blue" />
+            <Polyline positions={selectedRoute.polylinePositions} color="red" />
+          </>
+        )}
+
+
+        {/* {polylinePositions.map((position, index) => (
+          <Marker key={index} position={position} icon={circleIcon}>
+
+          </Marker>
+        ))} */}
+
+        {/* {vehicles.map((vehicle, index) => (
           <div key={index}>
             {vehicle && vehicle.position && vehicle.vehicle && (
               <Marker position={[vehicle.position.latitude, vehicle.position?.longitude]} icon={busIcon}>
@@ -105,7 +99,7 @@ function Map({ vehicles }: { vehicles: (GtfsRealtimeBindings.transit_realtime.IV
               </Marker>
             )}
           </div>
-        ))}
+        ))} */}
       </MapContainer>
     </div>
   );
