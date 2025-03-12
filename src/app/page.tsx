@@ -11,14 +11,16 @@ import MapSidebar from "@/components/MapSidebar";
 async function Home() {
   console.time('performance');
   const [
-    { routes }, { routeTrips }, { tripShapes }, vehicles
+    { routes }, { routeTrips }, { tripShapes }, /* vehicles */
   ] = await Promise.all([
     readRoutesTxtFile(),
     readTripsTxtFile(),
     readShapesTxtFile(),
-    getVehiclePositions(),
+    // getVehiclePositions(),
   ]);
   console.timeEnd('performance');
+
+  const vehicles: any = [];
 
   return (
     <div className="relative top-0 left-0 flex flex-col md:flex-row gap-4 p-4 w-full h-full">
@@ -43,4 +45,5 @@ export default Home;
 // TODO: display a dashed path from home to nearest stop for a selected route
 // TODO: only show live bus data for the selected route
 
+// FIX: speed up build time by reducing size of page
 // FIX: some routes do not exist when you click on them - check before trying to display - see Next.js provided errors
