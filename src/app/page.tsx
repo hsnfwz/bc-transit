@@ -9,18 +9,25 @@ import MapCaller from "@/components/MapCaller";
 import MapSidebar from "@/components/MapSidebar";
 
 async function Home() {
+  // console.time('performance');
+  // const [
+  //   { routes }, { routeTrips }, { tripShapes }, /* vehicles */
+  // ] = await Promise.all([
+  //   readRoutesTxtFile(),
+  //   readTripsTxtFile(),
+  //   readShapesTxtFile(),
+  //   // getVehiclePositions(),
+  // ]);
+  // console.timeEnd('performance');
+
   console.time('performance');
-  const [
-    { routes }, { routeTrips }, { tripShapes }, /* vehicles */
-  ] = await Promise.all([
-    readRoutesTxtFile(),
-    readTripsTxtFile(),
-    readShapesTxtFile(),
-    // getVehiclePositions(),
-  ]);
-  console.timeEnd('performance');
 
   const vehicles: any = [];
+  const { routes } = await readRoutesTxtFile();
+  const { routeTrips } = await readTripsTxtFile();
+  const { tripShapes } = await readShapesTxtFile();
+
+  console.timeEnd('performance');
 
   return (
     <div className="relative top-0 left-0 flex flex-col md:flex-row gap-4 p-4 w-full h-full">
