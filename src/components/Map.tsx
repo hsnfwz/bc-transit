@@ -2,19 +2,54 @@
 
 import 'leaflet/dist/leaflet.css';
 
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, Polygon } from 'react-leaflet';
 import { Icon } from 'leaflet';
 import GtfsRealtimeBindings from "gtfs-realtime-bindings";
-import { RouteContext } from '@/contexts/RouteContextProvider';
+import { useRouteContext } from '@/hooks/context';
+import { getVehicles } from '@/helpers/realtime';
 
-function Map({ vehicles }: {
-  vehicles: (GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[],
-}) {
-  const { hoveredRoute, setHoveredRoute, selectedRoute, setSelectedRoute } = useContext(RouteContext);
+function Map() {
+  const { selectedRoute, hoveredRoute, setSelectedRoute, setHoveredRoute } = useRouteContext();
+
+  const [vehicles, setVehicles] = useState<(GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[]>([]);
+  const [selectedRouteVehicles, setSelectedRouteVehicles] = useState<(GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[]>([]);
 
   const [mapTheme, setMapTheme] = useState<string>('light');
   const mapRef = useRef<any>(null);
+
+  useEffect(() => {
+    async function getData() {
+      const { vehicles: _vehicles } = await getVehicles();
+
+      if (_vehicles) {
+        console.log('MOUNT:', _vehicles);
+        setVehicles(_vehicles);
+
+        setInterval(async () => {
+          const { vehicles: _vehicles } = await getVehicles();
+          console.log('INTERVAL:', _vehicles);
+          setVehicles(_vehicles);
+        }, 30000);
+      }
+    }
+
+    getData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedRoute) {
+      const _selectedRouteVehicles: (GtfsRealtimeBindings.transit_realtime.IVehiclePosition | null | undefined)[] = vehicles.filter(vehicle => {
+        if (vehicle?.trip?.routeId === selectedRoute.route.route_id) {
+          return vehicle;
+        }
+      });
+
+      console.log(_selectedRouteVehicles);
+
+      setSelectedRouteVehicles(_selectedRouteVehicles);
+    }
+  }, [selectedRoute, vehicles]);
 
   const iconPixelSize: [number, number] = [40, 40];
 
@@ -74,13 +109,7 @@ function Map({ vehicles }: {
         )}
 
 
-        {/* {polylinePositions.map((position, index) => (
-          <Marker key={index} position={position} icon={circleIcon}>
-
-          </Marker>
-        ))} */}
-
-        {/* {vehicles.map((vehicle, index) => (
+        {selectedRouteVehicles.map((vehicle, index) => (
           <div key={index}>
             {vehicle && vehicle.position && vehicle.vehicle && (
               <Marker position={[vehicle.position.latitude, vehicle.position?.longitude]} icon={busIcon}>
@@ -99,7 +128,7 @@ function Map({ vehicles }: {
               </Marker>
             )}
           </div>
-        ))} */}
+        ))}
       </MapContainer>
     </div>
   );

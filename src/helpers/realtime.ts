@@ -1,6 +1,7 @@
 /* 
   References:
   - Realtime: https://gtfs.org/documentation/realtime/reference/
+  - TransLink: https://www.translink.ca/about-us/doing-business-with-translink/app-developer-resources/gtfs
   
 */
 
@@ -9,7 +10,7 @@ import GtfsRealtimeBindings from "gtfs-realtime-bindings";
 // ex: "Bus X is delayed by 5 minutes"
 async function getTripUpdates() {
   try {
-    const response = await fetch(`https://gtfsapi.translink.ca/v3/gtfsrealtime?apikey=${process.env.NEXT_PUBLIC_TRANSLINK_API_KEY}`);
+    const response = await fetch(`/gtfsrealtime`);
 
     if (!response.ok) {
       throw new Error(`${response.url}: ${response.status} ${response.statusText}`);
@@ -20,16 +21,21 @@ async function getTripUpdates() {
 
     const tripUpdates = feed.entity.map(entity => entity.tripUpdate);
 
-    return tripUpdates;
+    return {
+      tripUpdates,
+    };
   } catch(error) {
     console.log(error);
+    return {
+      tripUpdates: [],
+    };
   }
 }
 
 // ex: "This bus is at position X at time Y"
-async function getVehiclePositions() {
+async function getVehicles() {
   try {
-    const response = await fetch(`https://gtfsapi.translink.ca/v3/gtfsposition?apikey=${process.env.NEXT_PUBLIC_TRANSLINK_API_KEY}`);
+    const response = await fetch(`/gtfsposition`);
 
     if (!response.ok) {
       throw new Error(`${response.url}: ${response.status} ${response.statusText}`);
@@ -40,16 +46,21 @@ async function getVehiclePositions() {
 
     const vehicles = feed.entity.map(entity => entity.vehicle);
 
-    return vehicles;
+    return {
+      vehicles,
+    };
   } catch(error) {
     console.log(error);
+    return {
+      vehicles: [],
+    };
   }
 }
 
 // ex: "Station Y is closed due to construction"
 async function getServiceAlerts() {
   try {
-    const response = await fetch(`https://gtfsapi.translink.ca/v3/gtfsalerts?apikey=${process.env.NEXT_PUBLIC_TRANSLINK_API_KEY}`);
+    const response = await fetch(`/gtfsalerts`);
 
     if (!response.ok) {
       throw new Error(`${response.url}: ${response.status} ${response.statusText}`);
@@ -60,14 +71,19 @@ async function getServiceAlerts() {
 
     const alerts = feed.entity.map(entity => entity.alert);
 
-    return alerts;
+    return {
+      alerts,
+    };
   } catch(error) {
     console.log(error);
+    return {
+      alerts: [],
+    };
   }
 }
 
 export {
   getTripUpdates,
-  getVehiclePositions,
+  getVehicles,
   getServiceAlerts,
 }

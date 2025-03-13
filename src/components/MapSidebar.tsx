@@ -1,13 +1,13 @@
 'use client';
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, RouteTrips, TripShapes } from "@/types/transit";
-import { RouteContext } from "@/contexts/RouteContextProvider";
 import { Route, Trip } from "@/types/transit";
-import { readRoutesTxtFile, readStopsTxtFile, readTripsTxtFile, readStopTimesTxtFile, readShapesTxtFile } from "@/helpers/files";
+import { getRouteTrips, getRoutes, getStopTimes, getStops, getTripShapes } from "@/helpers/schedule";
+import { useRouteContext } from "@/hooks/context";
 
 function MapSidebar() {
-  const { hoveredRoute, setHoveredRoute, selectedRoute, setSelectedRoute } = useContext(RouteContext);
+  const { selectedRoute, hoveredRoute, setSelectedRoute, setHoveredRoute } = useRouteContext();
 
   const [routes, setRoutes] = useState<Routes>({});
   const [routeTrips, setRouteTrips] = useState<RouteTrips>({});
@@ -19,9 +19,9 @@ function MapSidebar() {
       const [
         { routes: _routes }, { routeTrips: _routeTrips }, { tripShapes: _tripShapes }
       ] = await Promise.all([
-        readRoutesTxtFile(),
-        readTripsTxtFile(),
-        readShapesTxtFile(),
+        getRoutes(),
+        getRouteTrips(),
+        getTripShapes(),
       ]);
       console.timeEnd('performance');
 

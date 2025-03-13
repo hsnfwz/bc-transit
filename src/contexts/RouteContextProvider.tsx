@@ -1,8 +1,30 @@
 'use client';
 
-import { createContext, useState } from 'react';
+import { Route, Trip } from '@/types/transit';
+import { createContext, useState, Dispatch, SetStateAction } from 'react';
 
-const RouteContext = createContext<any>(null);
+const RouteContext = createContext<{
+  hoveredRoute: {
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null,
+  selectedRoute: {
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null,
+  setHoveredRoute: Dispatch<SetStateAction<{
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null>>,
+  setSelectedRoute: Dispatch<SetStateAction<{
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null>>
+} | null>(null);
 
 function RouteContextProvider({
   children,
@@ -10,8 +32,17 @@ function RouteContextProvider({
   children: React.ReactNode;
 }>) {
 
-  const [hoveredRoute, setHoveredRoute] = useState(null);
-  const [selectedRoute, setSelectedRoute] = useState(null);
+  const [hoveredRoute, setHoveredRoute] = useState<{
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null>(null);
+  
+  const [selectedRoute, setSelectedRoute] = useState<{
+    route: Route,
+    trip: Trip,
+    polylinePositions: [number, number][],
+  } | null>(null);
 
   return (
     <RouteContext.Provider value={{ hoveredRoute, setHoveredRoute, selectedRoute, setSelectedRoute }}>

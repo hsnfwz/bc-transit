@@ -1,6 +1,7 @@
 /* 
   References:
   - Schedule: https://gtfs.org/documentation/schedule/reference/
+  - TransLink: https://www.translink.ca/about-us/doing-business-with-translink/app-developer-resources/gtfs
 
   Notes:
   - each file needs to be update every week (translink posts new files every week)
@@ -8,20 +9,13 @@
 
 */
 
-// import { promises as fs } from 'fs';
-
 import { Routes, Route, RouteTrips, Trip, StopTimes, StopTime, Stop, Stops, Shape, Shapes, TripShapes } from '@/types/transit';
 
-async function readRoutesTxtFile() {
-  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/routes.txt', 'utf8');
-
+async function getRoutes() {
   const response = await fetch('/schedule/routes.txt');
   const text = await response.text();
 
   const lines = text.split('\n');
-
-  // const headers = lines[0].replace('\r', '').split(',');
-  // console.log(headers);
 
   if (lines[lines.length - 1] === '') {
     lines.pop();
@@ -56,16 +50,11 @@ async function readRoutesTxtFile() {
   };
 }
 
-async function readTripsTxtFile() {
-  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/trips.txt', 'utf8');
-
+async function getRouteTrips() {
   const response = await fetch('/schedule/trips.txt');
   const text = await response.text();
   
   const lines = text.split('\n');
-
-  // const headers = lines[0].replace('\r', '').split(',');
-  // console.log(headers);
 
   if (lines[lines.length - 1] === '') {
     lines.pop();
@@ -107,16 +96,11 @@ async function readTripsTxtFile() {
   };
 }
 
-async function readStopTimesTxtFile() {
-  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stop_times.txt', 'utf8');
-
+async function getStopTimes() {
   const response = await fetch('/schedule/stop_times.txt');
   const text = await response.text();
   
   const lines = text.split('\n');
-
-  // const headers = lines[0].replace('\r', '').split(',');
-  // console.log(headers);
 
   if (lines[lines.length - 1] === '') {
     lines.pop();
@@ -157,16 +141,11 @@ async function readStopTimesTxtFile() {
   };
 }
 
-async function readStopsTxtFile() {
-  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/stops.txt', 'utf8');
-
+async function getStops() {
   const response = await fetch('/schedule/stops.txt');
   const text = await response.text();
   
   const lines = text.split('\n');
-
-  // const headers = lines[0].replace('\r', '').split(',');
-  // console.log(headers);
 
   if (lines[lines.length - 1] === '') {
     lines.pop();
@@ -203,16 +182,11 @@ async function readStopsTxtFile() {
   };
 }
 
-async function readShapesTxtFile() {
-  // const file = await fs.readFile(process.cwd() + '/public/translink-static-data/shapes.txt', 'utf8');
-
+async function getTripShapes() {
   const response = await fetch('/schedule/shapes.txt');
   const text = await response.text();
   
   const lines = text.split('\n');
-
-  // const headers = lines[0].replace('\r', '').split(',');
-  // console.log(headers);
 
   if (lines[lines.length - 1] === '') {
     lines.pop();
@@ -233,13 +207,6 @@ async function readShapesTxtFile() {
       shape_dist_traveled: data[4],
     };
 
-    // if (tripShapes[shape.shape_id]) {
-    //   tripShapes[shape.shape_id].push(shape);
-    // } else {
-    //   tripShapes[shape.shape_id] = [];
-    //   tripShapes[shape.shape_id].push(shape);
-    // }
-
     if (tripShapes[shape.shape_id]) {
       tripShapes[shape.shape_id][shape.shape_pt_sequence] = shape;
     } else {
@@ -256,9 +223,9 @@ async function readShapesTxtFile() {
 }
 
 export {
-  readRoutesTxtFile,
-  readTripsTxtFile,
-  readStopsTxtFile,
-  readStopTimesTxtFile,
-  readShapesTxtFile,
+  getRoutes,
+  getRouteTrips,
+  getStops,
+  getStopTimes,
+  getTripShapes,
 }
