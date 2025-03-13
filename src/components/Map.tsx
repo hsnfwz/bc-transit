@@ -23,12 +23,12 @@ function Map() {
       const { vehicles: _vehicles } = await getVehicles();
 
       if (_vehicles) {
-        console.log('MOUNT:', _vehicles);
+        // console.log('MOUNT:', _vehicles);
         setVehicles(_vehicles);
 
         setInterval(async () => {
           const { vehicles: _vehicles } = await getVehicles();
-          console.log('INTERVAL:', _vehicles);
+          // console.log('INTERVAL:', _vehicles);
           setVehicles(_vehicles);
         }, 30000);
       }
@@ -56,11 +56,13 @@ function Map() {
   const locationIcon = new Icon({
     iconUrl: '/map-pin-fill.svg',
     iconSize: iconPixelSize,
+    className: 'rounded-full bg-white transition-all duration-300 shadow',
   });
 
   const busIcon = new Icon({
     iconUrl: '/bus-fill.svg',
     iconSize: iconPixelSize,
+    className: 'rounded-full bg-white transition-all duration-300 shadow',
   });
 
   const circleIcon = new Icon({
@@ -96,37 +98,33 @@ function Map() {
 
         {hoveredRoute && (
           <>
-            <Polygon positions={hoveredRoute.polylinePositions} color="lightgray" />
-            <Polyline positions={hoveredRoute.polylinePositions} color="gray" />
+            <Polygon positions={hoveredRoute.polylinePositions} color="oklch(0.922 0 0)" interactive={false} />
+            <Polyline positions={hoveredRoute.polylinePositions} color="oklch(0.708 0 0)" interactive={false} />
           </>
         )}
 
         {selectedRoute && (
           <>
-            <Polygon positions={selectedRoute.polylinePositions} color="blue" />
-            <Polyline positions={selectedRoute.polylinePositions} color="red" />
+            <Polygon positions={selectedRoute.polylinePositions} color="oklch(0.685 0.169 237.323)" interactive={false} />
+            <Polyline positions={selectedRoute.polylinePositions} color="oklch(0.696 0.17 162.48)" interactive={false} />
           </>
         )}
 
-
         {selectedRouteVehicles.map((vehicle, index) => (
-          <div key={index}>
+          <div key={index} className="p-4">
             {vehicle && vehicle.position && vehicle.vehicle && (
-              <Marker position={[vehicle.position.latitude, vehicle.position?.longitude]} icon={busIcon}>
-                <Popup>
-                  <div className="flex flex-col gap-2 p-2 w-full min-w-[128px] shadow">
-                    <button type="button" className="self-end hover:bg-neutral-200 flex justify-center items-center cursor-pointer" onClick={() => mapRef.current?.closePopup()}>
-                      <img src="/close-line.svg" alt="Close Popup" width={16} height={16} />
-                    </button>
-                    <h1 className="font-bold">Bus: {vehicle.vehicle.label}</h1>
-                    <p>ID: {vehicle.vehicle.id}</p>
-                    <p>Status: {vehicle.currentStatus}</p>
-                    <p>Stop Sequence: {vehicle.currentStopSequence}</p>
-                    <p>Stop ID: {vehicle.stopId}</p>
-                  </div>
-                </Popup>
-              </Marker>
-            )}
+                <Marker position={[vehicle.position.latitude, vehicle.position?.longitude]} icon={busIcon} interactive={false}>
+                  {/* <Popup className="transition-all duration-300">
+                    <div className="flex flex-col justify-start items-start p-2 gap-2 w-[128px] shadow">
+                      <button type="button" className="self-end hover:bg-neutral-200 flex justify-center items-center cursor-pointer" onClick={() => mapRef.current?.closePopup()}>
+                        <img src="/close-line.svg" alt="Close Popup" width={16} height={16} />
+                      </button>
+                      <span className="font-bold">{vehicle.vehicle.label}</span>
+                      <span>Stop: {vehicle.stopId}</span>
+                    </div>
+                  </Popup> */}
+                </Marker>
+            )}            
           </div>
         ))}
       </MapContainer>

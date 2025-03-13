@@ -16,7 +16,7 @@ async function Home() {
 
 export default Home;
 
+// TODO: some routes are not rendering properyl - ex: route 019 metrotown/stanley parl
 // TODO: marker clusters
 // TODO: local storage for user activity and preferences
 // TODO: display a dashed path from home to nearest stop for a selected route
-// TODO: only show live bus data for the selected route

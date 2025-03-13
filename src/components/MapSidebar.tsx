@@ -67,7 +67,7 @@ function MapSidebar() {
   }
 
   return (
-    <div className="flex flex-col divide-y-2 divide-neutral-200 border-2 border-neutral-200 w-full h-[200px] md:max-w-[300px] md:h-[calc(100vh-32px)] overflow-y-scroll">
+    <div className="flex flex-col divide-y divide-neutral-200 border border-neutral-200 w-full h-[200px] md:max-w-[300px] md:h-[calc(100vh-32px)] overflow-y-scroll">
       {Object.values(routes).map((route, index) => (
         <button
           key={index}

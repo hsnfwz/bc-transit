@@ -31,6 +31,10 @@
   display: none !important;
 }
 
+.leaflet-marker-icon {
+  padding: 8px !important;
+}
+
 @media (min-width: 768px) {
   .leaflet-container {
     height: calc(100vh - 32px) !important;
